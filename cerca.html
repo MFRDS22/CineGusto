@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>CineGusto</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#070b14">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <style>
+        /* Qui c'è il tuo CSS... */
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CineGusto | Ricerca Avanzata</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #070b14; color: white; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        
+        .app-card { width: 100%; max-width: 550px; text-align: center; }
+        
+        h1 { color: #fbbf24; margin-bottom: 10px; font-size: 2rem; text-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+        .tagline { margin-bottom: 25px; font-size: 0.85rem; color: #94a3b8; letter-spacing: 1px; }
+        
+        /* SEARCH BOX */
+        .search-box { display: flex; gap: 10px; margin-bottom: 30px; background: #111827; padding: 8px; border-radius: 15px; border: 1px solid #1f2937; }
+        input { 
+            flex: 1; padding: 15px; border-radius: 10px; border: none; 
+            background: transparent; color: white; outline: none; font-size: 1rem;
+        }
+        button#find { background: #fbbf24; border: none; padding: 0 25px; border-radius: 10px; cursor: pointer; font-weight: 800; color: #000; transition: 0.2s; }
+        button#find:active { transform: scale(0.95); }
+
+        /* RISULTATI */
+        #result-area { display: none; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .film-badge { background: #fbbf24; color: #000; padding: 5px 15px; border-radius: 20px; margin-bottom: 25px; display: inline-block; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+
+        /* SEZIONE DOPPIA */
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .card { background: #111827; padding: 20px; border-radius: 20px; text-align: left; border: 1px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .card h3 { color: #fbbf24; margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1f2937; padding-bottom: 10px; }
+        
+        ul { list-style: none; }
+        li { margin-bottom: 10px; font-size: 0.95rem; color: #e2e8f0; display: flex; align-items: center; }
+        li::before { content: "✔"; color: #fbbf24; margin-right: 12px; font-weight: bold; }
+
+        /* BOTTONI ORDINE */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .btn-order { 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s;
+        }
+        .glovo { background: #ffc244; color: #00a082; }
+        .justeat { background: #f36324; color: white; }
+        
+        .back-link { display: inline-block; margin-top: 40px; color: #4b5563; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid transparent; }
+        .back-link:hover { border-bottom-color: #4b5563; }
+    </style>
+</head>
+<body>
+
+    <div class="app-card">
+        <h1>CineGusto</h1>
+        <p class="tagline">IL TITOLO DEL FILM, IL TUO MENU.</p>
+        <div style="position: absolute; top: 20px; left: 20px;">
+    <a href="T1.5.html" style="text-decoration: none; color: #94a3b8; font-size: 1.2rem; background: #111827; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid #1f2937; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        🏠
+    </a>
+</div>
+
+        <div class="search-box">
+            <input type="text" id="movie-input" placeholder="Cerca: Harry Potter, Avengers, Joker..." onkeydown="if(event.key==='Enter') analyzeMovie()">
+            <button id="find" onclick="analyzeMovie()">GO</button>
+        </div>
+
+        <div id="result-area">
+            <div class="film-badge" id="confirmed-title"></div>
+
+            <div class="options-grid">
+                <div class="card">
+                    <h3>👨‍🍳 Ricetta Suggerita</h3>
+                    <p id="recipe-name" style="font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; color: white;"></p>
+                    <ul id="ingredients-list"></ul>
+                </div>
+
+                <div class="card">
+                    <h3>🛵 Fast Delivery</h3>
+                    <div class="btn-group">
+                        <a href="https://glovoapp.com/" target="_blank" class="btn-order glovo">ORDINA SU GLOVO</a>
+                        <a href="https://www.justeat.it/" target="_blank" class="btn-order justeat">ORDINA SU JUST EAT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <a href="T1.5.html" class="back-link">← TORNA ALLA HOME</a>
+    </div>
+
+    <script>
+        function analyzeMovie() {
+            const title = document.getElementById('movie-input').value.toLowerCase().trim();
+            const resultArea = document.getElementById('result-area');
+            const ingredientsList = document.getElementById('ingredients-list');
+            const recipeName = document.getElementById('recipe-name');
+            const confirmedTitle = document.getElementById('confirmed-title');
+
+            if (title.length < 2) return;
+
+            resultArea.style.display = 'block';
+            confirmedTitle.innerText = "Mood: " + title;
+            ingredientsList.innerHTML = "";
+
+            let food = { name: "Pizza Custom", ing: ["Impasto base", "Pomodoro", "Mozzarella", "Tua fantasia"] };
+
+            // DATABASE ESTESO
+            if (title.includes("padrino") || title.includes("godfather") || title.includes("scorsese") || title.includes("goodfellas")) {
+                food = { name: "Penne alla Vodka & Meatballs", ing: ["Penne", "Salsa di pomodoro", "Panna", "Vodka", "Polpette di manzo", "Pecorino"] };
+            } 
+            else if (title.includes("potter") || title.includes("lord of the rings") || title.includes("signore") || title.includes("hobbit")) {
+                food = { name: "Stufato del Viandante", ing: ["Carne di manzo", "Patate", "Carote", "Cipolla", "Birra scura", "Rosmarino"] };
+            }
+            else if (title.includes("avengers") || title.includes("marvel") || title.includes("spider") || title.includes("batman")) {
+                food = { name: "Shawarma o New York Burger", ing: ["Pane Pita o Brioche", "Carne grigliata", "Hummus o Cheddar", "Salse piccanti", "Patatine fritte"] };
+            }
+            else if (title.includes("star wars") || title.includes("interstellar") || title.includes("dune") || title.includes("matrix")) {
+                food = { name: "Space Ramen", ing: ["Noodles", "Brodo di carne o vegetale", "Uovo marinato", "Alghe", "Germogli di soia", "Zenzero"] };
+            }
+            else if (title.includes("joker") || title.includes("pulp fiction") || title.includes("tarantino")) {
+                food = { name: "Big Kahuna Burger", ing: ["Hamburger alto", "Fetta d'ananas alla piastra", "Cheddar", "Ketchup", "Senape", "Cetriolini"] };
+            }
+            else if (title.includes("coco") || title.includes("narcos") || title.includes("messico")) {
+                food = { name: "Tacos Al Pastor", ing: ["Tortillas di mais", "Maiale speziato", "Coriandolo", "Lime", "Salsa piccante"] };
+            }
+            else if (title.includes("ghibli") || title.includes("anime") || title.includes("totoro") || title.includes("naruto")) {
+                food = { name: "Onigiri & Tempura", ing: ["Riso per sushi", "Alga Nori", "Gamberi", "Pastella leggera", "Salsa Ponzu"] };
+            }
+            else if (title.includes("horror") || title.includes("scream") || title.includes("it") || title.includes("halloween")) {
+                food = { name: "Sushi Sangue & Terrore", ing: ["Riso", "Tonno rosso (Sashimi)", "Salmone", "Zenzero rosso", "Wasabi forte"] };
+            }
+            else if (title.includes("romant") || title.includes("love") || title.includes("notting hill") || title.includes("titanic")) {
+                food = { name: "Fonduta di Formaggio o Fragole", ing: ["Formaggi fusi", "Pane tostato", "Vino bianco", "Frutta fresca", "Cioccolato fuso"] };
+            }
+            else if (title.includes("fast") || title.includes("furious") || title.includes("cars")) {
+                food = { name: "Hot Dog Extreme", ing: ["Wurstel XXL", "Cipolla croccante", "Salsa BBQ", "Senape", "Pane morbido"] };
+            }
+
+            recipeName.innerText = food.name;
+            food.ing.forEach(item => {
+                let li = document.createElement('li');
+                li.innerText = item;
+                ingredientsList.appendChild(li);
+            });
+            
+            // Scroll automatico al risultato su mobile
+            window.scrollTo({ top: resultArea.offsetTop, behavior: 'smooth' });
+        }function analyzeMovie() {
+            const title = document.getElementById('movie-input').value.toLowerCase().trim();
+            const resultArea = document.getElementById('result-area');
+            const ingredientsList = document.getElementById('ingredients-list');
+            const recipeName = document.getElementById('recipe-name');
+            const confirmedTitle = document.getElementById('confirmed-title');
+
+            if (title.length < 2) return;
+
+            resultArea.style.display = 'block';
+            confirmedTitle.innerText = "Mood: " + title;
+            ingredientsList.innerHTML = "";
+
+            // Database di default se non trova nulla di specifico
+            let food = { name: "Pizza Custom", ing: ["Impasto base", "Pomodoro", "Mozzarella", "Tua fantasia"] };
+
+            // --- NUOVO DATABASE MEGA ESPANSO ---
+
+            // 1. MAFIA & CRIME (Classici)
+            if (title.includes("padrino") || title.includes("godfather") || title.includes("goodfellas") || title.includes("scorsese") || title.includes("soprano")) {
+                food = { name: "Ziti al Forno o Polpette", ing: ["Ziti (Pasta)", "Salsa di pomodoro", "Ricotta", "Polpette di manzo", "Mozzarella", "Parmigiano"] };
+            } 
+            // 2. FANTASY & MEDIEVALE
+            else if (title.includes("potter") || title.includes("lord of the rings") || title.includes("hobbit") || title.includes("thrones") || title.includes("witcher")) {
+                food = { name: "Cosciotto di Pollo & Birra Bionda", ing: ["Cosce di pollo", "Miele", "Patate arrosto", "Erbe aromatiche", "Pane rustico"] };
+            }
+            // 3. SUPEREROI & ACTION
+            else if (title.includes("avengers") || title.includes("marvel") || title.includes("spider") || title.includes("batman") || title.includes("iron man")) {
+                food = { name: "Shawarma o Cheeseburger XXL", ing: ["Carne di manzo", "Cheddar", "Bacon", "Salse piccanti", "Patatine fritte", "Cetriolini"] };
+            }
+            // 4. SCI-FI & SPAZIO
+            else if (title.includes("star wars") || title.includes("interstellar") || title.includes("dune") || title.includes("matrix") || title.includes("alien")) {
+                food = { name: "Miso Ramen Spaziale", ing: ["Noodles", "Brodo di miso", "Zenzero fresco", "Alghe", "Uovo marinato", "Pasta di soia"] };
+            }
+            // 5. CULT & TARANTINO
+            else if (title.includes("pulp fiction") || title.includes("joker") || title.includes("tarantino") || title.includes("lebowski")) {
+                food = { name: "Big Kahuna Burger & Milkshake", ing: ["Hamburger", "Ananas grigliato", "Formaggio fuso", "Pane dolce", "Gelato alla vaniglia per il shake"] };
+            }
+            // 6. MESSICANO & NARCOS
+            else if (title.includes("coco") || title.includes("narcos") || title.includes("mexico") || title.includes("breaking bad")) {
+                food = { name: "Tacos Al Pastor o Nachos", ing: ["Tortillas", "Carne di maiale speziata", "Coriandolo", "Lime", "Formaggio fuso per nachos"] };
+            }
+            // 7. ANIME & GIAPPONE
+            else if (title.includes("ghibli") || title.includes("anime") || title.includes("naruto") || title.includes("one piece") || title.includes("japan")) {
+                food = { name: "Gyoza & Tempura", ing: ["Ravioli di carne o verdure", "Gamberoni", "Pastella croccante", "Salsa di soia e aceto di riso"] };
+            }
+            // 8. HORROR & THRILLER
+            else if (title.includes("horror") || title.includes("it") || title.includes("scream") || title.includes("halloween") || title.includes("shining")) {
+                food = { name: "Sushi & Sashimi (Red mood)", ing: ["Riso", "Tonno rosso", "Salmone fresco", "Wasabi", "Zenzero marinato rosso"] };
+            }
+            // 9. ROMANTICO & DRAMMA
+            else if (title.includes("love") || title.includes("notting hill") || title.includes("titanic") || title.includes("brigerton")) {
+                food = { name: "Spaghetti con Burrata e Pistacchio", ing: ["Spaghetti", "Burrata fresca", "Granella di pistacchio", "Scorza di limone", "Olio EVO"] };
+            }
+            // 10. MOTORI & VELOCITÀ
+            else if (title.includes("fast") || title.includes("furious") || title.includes("cars") || title.includes("ferrari")) {
+                food = { name: "Hot Dog Extreme & Alette di Pollo", ing: ["Pane lungo", "Wurstel di qualità", "Cipolla fritta", "Alette di pollo piccanti", "Senape"] };
+            }
+            // 11. ANIMAZIONE & DISNEY
+            else if (title.includes("disney") || title.includes("pixar") || title.includes("shrek") || title.includes("minions")) {
+                food = { name: "Nuggets & Waffles Dolci", ing: ["Petto di pollo", "Pangrattato cornflakes", "Uova", "Sciroppo d'acero", "Panna montata"] };
+            }
+            // 12. MUSICAL & BALLO
+            else if (title.includes("musical") || title.includes("grease") || title.includes("la la land") || title.includes("bohemian")) {
+                food = { name: "Apericena New York Style", ing: ["Mini sandwich", "Olive condite", "Formaggi misti", "Finger food", "Spritz o Prosecco"] };
+            }
+
+            recipeName.innerText = food.name;
+            food.ing.forEach(item => {
+                let li = document.createElement('li');
+                li.innerText = item;
+                ingredientsList.appendChild(li);
+            });
+            
+            window.scrollTo({ top: resultArea.offsetTop, behavior: 'smooth' });
+        }function analyzeMovie() {
+            const title = document.getElementById('movie-input').value.toLowerCase().trim();
+            const resultArea = document.getElementById('result-area');
+            const ingredientsList = document.getElementById('ingredients-list');
+            const recipeName = document.getElementById('recipe-name');
+            const confirmedTitle = document.getElementById('confirmed-title');
+
+            if (title.length < 2) return;
+
+            resultArea.style.display = 'block';
+            confirmedTitle.innerText = "Mood: " + title;
+            ingredientsList.innerHTML = "";
+
+            // Database con TEMPI DI PREPARAZIONE
+            let food = { 
+                name: "Pizza Margherita", 
+                time: "15 min (Pronta)", 
+                ing: ["Base pronta", "Pomodoro", "Mozzarella", "Basilico"] 
+            };
+
+            if (title.includes("padrino") || title.includes("godfather") || title.includes("soprano")) {
+                food = { name: "Ziti al Forno", time: "50 min", ing: ["Ziti", "Salsa di pomodoro", "Ricotta", "Polpette", "Mozzarella"] };
+            } 
+            else if (title.includes("potter") || title.includes("lord of the rings") || title.includes("hobbit")) {
+                food = { name: "Stufato del Viandante", time: "90 min", ing: ["Carne di manzo", "Patate", "Carote", "Birra scura"] };
+            }
+            else if (title.includes("avengers") || title.includes("marvel") || title.includes("batman")) {
+                food = { name: "Cheeseburger XXL", time: "20 min", ing: ["Pane brioche", "Hamburger", "Cheddar", "Bacon", "Patatine"] };
+            }
+            else if (title.includes("star wars") || title.includes("interstellar") || title.includes("matrix")) {
+                food = { name: "Space Ramen", time: "35 min", ing: ["Noodles", "Brodo", "Uovo marinato", "Alghe", "Zenzero"] };
+            }
+            else if (title.includes("pulp fiction") || title.includes("tarantino") || title.includes("lebowski")) {
+                food = { name: "Big Kahuna Burger", time: "25 min", ing: ["Hamburger", "Ananas", "Cheddar", "Pane dolce", "Bacon"] };
+            }
+            else if (title.includes("ghibli") || title.includes("anime") || title.includes("japan")) {
+                food = { name: "Gyoza & Tempura", time: "45 min", ing: ["Ravioli", "Gamberi", "Pastella", "Salsa di soia"] };
+            }
+            else if (title.includes("horror") || title.includes("shining") || title.includes("scream")) {
+                food = { name: "Sushi & Sashimi", time: "60 min (se fatto in casa)", ing: ["Riso sushi", "Pesce abbattuto", "Alga Nori", "Wasabi"] };
+            }
+            else if (title.includes("love") || title.includes("notting hill") || title.includes("titanic")) {
+                food = { name: "Pasta Burrata e Pistacchio", time: "15 min", ing: ["Pasta", "Burrata", "Pistacchi", "Limone"] };
+            }
+            else if (title.includes("fast") || title.includes("furious") || title.includes("cars")) {
+                food = { name: "Hot Dog Extreme", time: "10 min", ing: ["Pane lungo", "Wurstel", "Cipolla fritta", "Salse"] };
+            }
+            else if (title.includes("disney") || title.includes("pixar") || title.includes("shrek")) {
+                food = { name: "Nuggets & Waffles", time: "30 min", ing: ["Pollo", "Cornflakes", "Farina", "Uova", "Sciroppo d'acero"] };
+            }
+            else if (title.includes("mamma ho perso") || title.includes("home alone") || title.includes("natale") || title.includes("christmas")) {
+                food = { name: "Pizza Formaggiosa (Kevins Choice)", time: "12 min", ing: ["Pizza margherita", "Extra mozzarella", "Parmigiano", "Gorgonzola"] };
+            }
+
+            // Inseriamo il nome e il tempo
+            recipeName.innerHTML = `${food.name} <span style="font-size: 0.8rem; color: #fbbf24; display: block; margin-top: 5px;">⏱ Tempo: ${food.time}</span>`;
+            
+            food.ing.forEach(item => {
+                let li = document.createElement('li');
+                li.innerText = item;
+                ingredientsList.appendChild(li);
+            });
+            
+            window.scrollTo({ top: resultArea.offsetTop, behavior: 'smooth' });
+        }function analyzeMovie() {
+    const title = document.getElementById('movie-input').value.toLowerCase().trim();
+    const resultArea = document.getElementById('result-area');
+    const ingredientsList = document.getElementById('ingredients-list');
+    const recipeName = document.getElementById('recipe-name');
+    const confirmedTitle = document.getElementById('confirmed-title');
+
+    if (title.length < 2) return;
+
+    resultArea.style.display = 'block';
+    confirmedTitle.innerText = "Vibe Attuale: " + title.toUpperCase();
+    ingredientsList.innerHTML = "";
+
+    // Il database definitivo con Cibo, Tempo e Drink Rapido
+    let match = {
+        food: "Pizza Margherita",
+        time: "15 min",
+        ing: ["Base pronta", "Mozzarella", "Pomodoro"],
+        drink: "Birra Gelata 🍺"
+    };
+
+    if (title.includes("padrino") || title.includes("godfather") || title.includes("mafia")) {
+        match = { 
+            food: "Penne alla Vodka & Polpette", time: "45 min", 
+            ing: ["Penne", "Salsa", "Vodka", "Polpette"], 
+            drink: "The Godfather (Scotch & Amaretto) 🥃" 
+        };
+    } 
+    else if (title.includes("potter") || title.includes("signore") || title.includes("hobbit")) {
+        match = { 
+            food: "Stufato del Viandante", time: "90 min", 
+            ing: ["Manzo", "Patate", "Birra Scura"], 
+            drink: "Burrobirra Rapida (Birra + Caramello) 🍺" 
+        };
+    }
+    else if (title.includes("avengers") || title.includes("marvel") || title.includes("iron man")) {
+        match = { 
+            food: "Cheeseburger Avengers", time: "20 min", 
+            ing: ["Pane", "Carne", "Cheddar", "Bacon"], 
+            drink: "Green Smoothie di Hulk (Mela & Lime) 🍏" 
+        };
+    }
+    else if (title.includes("star wars") || title.includes("interstellar") || title.includes("space")) {
+        match = { 
+            food: "Space Ramen", time: "35 min", 
+            ing: ["Noodles", "Uovo", "Zenzero", "Alghe"], 
+            drink: "Latte Blu di Tatooine (Latte & Sciroppo Mirtillo) 🌌" 
+        };
+    }
+    else if (title.includes("pulp fiction") || title.includes("tarantino") || title.includes("joker")) {
+        match = { 
+            food: "Big Kahuna Burger", time: "25 min", 
+            ing: ["Hamburger", "Ananas", "Cheddar", "Pane dolce"], 
+            drink: "Milkshake da 5 Dollari (Vaniglia & Panna) 🍦" 
+        };
+    }
+    else if (title.includes("ghibli") || title.includes("anime") || title.includes("japan")) {
+        match = { 
+            food: "Gyoza & Tempura", time: "45 min", 
+            ing: ["Ravioli", "Gamberi", "Salsa Soia"], 
+            drink: "Tè Matcha Freddo o Sake 🍶" 
+        };
+    }
+    else if (title.includes("horror") || title.includes("scream") || title.includes("shining")) {
+        match = { 
+            food: "Sushi Rosso Terrore", time: "60 min", 
+            ing: ["Riso", "Tonno Rosso", "Alga"], 
+            drink: "Bloody Mary (Succo Pomodoro & Vodka) 🍅" 
+        };
+    }
+    else if (title.includes("love") || title.includes("notting hill") || title.includes("titanic")) {
+        match = { 
+            food: "Pasta Burrata e Pistacchio", time: "15 min", 
+            ing: ["Pasta", "Burrata", "Pistacchi"], 
+            drink: "Calice di Prosecco o Rosé 🥂" 
+        };
+    }
+    else if (title.includes("natale") || title.includes("christmas") || title.includes("mamma ho perso")) {
+        match = { 
+            food: "Pizza Formaggiosa di Kevin", time: "12 min", 
+            ing: ["Pizza surgelata", "4 Formaggi extra"], 
+            drink: "Cioccolata Calda con Marshmallow ☕" 
+        };
+    }
+    else if (title.includes("007") || title.includes("bond") || title.includes("thriller")) {
+        match = { 
+            food: "Tartine al Salmone & Caviale", time: "10 min", 
+            ing: ["Pane nero", "Burro", "Salmone"], 
+            drink: "Vesper Martini (Agitato, non mescolato) 🍸" 
+        };
+    }
+
+    // AGGIORNAMENTO UI
+    recipeName.innerHTML = `${match.food} <span style="font-size: 0.85rem; color: #fbbf24; display: block; margin-top: 5px;">⏱ Preparazione: ${match.time}</span>`;
+    
+    match.ing.forEach(item => {
+        let li = document.createElement('li');
+        li.innerText = item;
+        ingredientsList.appendChild(li);
+    });
+
+    // Aggiunta dinamica della sezione DRINK se non esiste
+    let drinkCard = document.getElementById('drink-card');
+    if (!drinkCard) {
+        drinkCard = document.createElement('div');
+        drinkCard.id = 'drink-card';
+        drinkCard.className = 'card';
+        drinkCard.style.marginTop = "15px";
+        document.querySelector('.options-grid').appendChild(drinkCard);
+    }
+    drinkCard.innerHTML = `<h3>🍸 Drink Rapido (2 min)</h3><p style="font-size: 1.2rem; color: white; font-weight: bold;">${match.drink}</p>`;
+
+    window.scrollTo({ top: resultArea.offsetTop, behavior: 'smooth' });
+}
+    </script>
+</body>
+</html>

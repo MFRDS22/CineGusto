@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>CineGusto</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#070b14">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <style>
+        /* Qui c'è il tuo CSS... */
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CineGusto | Mood Roulette</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #070b14; color: white; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        
+        .app-card { width: 100%; max-width: 500px; text-align: center; }
+        h1 { color: #fbbf24; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 1.8rem; }
+
+        .mood-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px; letter-spacing: 1px; }
+        
+        /* GRIGLIA MOOD */
+        .mood-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
+        .mood-btn { 
+            background: #111827; border: 1px solid #1f2937; color: white; 
+            padding: 18px; border-radius: 15px; cursor: pointer; transition: 0.3s; font-size: 0.85rem;
+        }
+        .mood-btn.active { background: #fbbf24; color: #000; border-color: #fbbf24; font-weight: bold; transform: scale(1.02); }
+
+        /* TASTO GIRA */
+        #spin-btn { 
+            width: 100%; padding: 18px; border-radius: 50px; border: none; 
+            background: linear-gradient(45deg, #fbbf24, #f59e0b); color: #000;
+            font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3); display: none;
+        }
+
+        /* SCHEDE RISULTATO */
+        #result-display { display: none; text-align: left; animation: popIn 0.5s ease; }
+        @keyframes popIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .res-box { background: #111827; border-radius: 15px; padding: 18px; margin-bottom: 12px; border: 1px solid #1f2937; }
+        .res-box h3 { font-size: 0.65rem; color: #fbbf24; text-transform: uppercase; margin-bottom: 8px; }
+        .res-content { font-size: 1.2rem; font-weight: bold; }
+        .res-sub { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+        /* SEZIONE DELIVERY */
+        .delivery-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #1f2937; }
+        .delivery-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-del { 
+            flex: 1; padding: 14px; border-radius: 12px; text-decoration: none; 
+            font-weight: bold; text-align: center; font-size: 0.85rem; transition: 0.3s;
+        }
+        .glovo { background: #ffc244; color: #00a082; }
+        .justeat { background: #f36324; color: white; }
+
+        .back-link { display: inline-block; margin-top: 30px; color: #4b5563; text-decoration: none; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="app-card">
+        <h1>Mood Roulette</h1>
+        <p class="mood-label">COME TI SENTI STASERA?</p>
+
+        <div class="mood-grid">
+            <button class="mood-btn" onclick="selectMood('tired', this)">😴 DISTRUTTO</button>
+            <button class="mood-btn" onclick="selectMood('sad', this)">😢 NOSTALGICO</button>
+            <button class="mood-btn" onclick="selectMood('wild', this)">🔥 CARICO</button>
+            <button class="mood-btn" onclick="selectMood('bored', this)">😐 ANNOIATO</button>
+        </div>
+
+        <button id="spin-btn" onclick="spinRoulette()">🎰 GIRA LA RUOTA</button>
+
+        <div id="result-display">
+            <div class="res-box">
+                <h3>🎬 Guarda questo:</h3>
+                <div id="res-movie" class="res-content"></div>
+            </div>
+            
+            <div class="res-box">
+                <h3>🍕 Mangia questo:</h3>
+                <div id="res-food" class="res-content"></div>
+                <div id="res-food-time" class="res-sub"></div>
+            </div>
+
+            <div class="res-box">
+                <h3>🍸 Bevi questo:</h3>
+                <div id="res-drink" class="res-content"></div>
+            </div>
+
+            <div class="delivery-section">
+                <p style="font-size: 0.75rem; color: #94a3b8; text-align: center; margin-bottom: 10px;">NON HAI VOGLIA DI CUCINARE?</p>
+                <div class="delivery-btns">
+                    <a href="https://glovoapp.com/" target="_blank" class="btn-del glovo">GLOVO</a>
+                    <a href="https://www.justeat.it/" target="_blank" class="btn-del justeat">JUST EAT</a>
+                </div>
+            </div>
+        </div>
+
+        <a href="T1.5.html" class="back-link">← TORNA ALLA HOME</a>
+    </div>
+
+    <script>
+        let currentMood = "";
+        
+        const database = {
+            'tired': [
+                { movie: "Shrek", food: "Nuggets & Waffles", time: "20 min", drink: "Succo d'Arancia 🥤" },
+                { movie: "Mamma ho perso l'aereo", food: "Pizza Formaggio Kevin", time: "12 min", drink: "Cioccolata Calda ☕" }
+            ],
+            'sad': [
+                { movie: "Titanic", food: "Gelato & Fragole", time: "5 min", drink: "Vino Rosé 🍷" },
+                { movie: "Up", food: "Pasta al Burro e Salvia", time: "10 min", drink: "Tè Caldo al Limone 🍵" }
+            ],
+            'wild': [
+                { movie: "Mad Max: Fury Road", food: "Alette di Pollo fritte", time: "25 min", drink: "Birra Media Gelata 🍺" },
+                { movie: "Fast & Furious", food: "Hot Dog Extreme", time: "10 min", drink: "Coca & Jack 🥃" }
+            ],
+            'bored': [
+                { movie: "Inception", food: "Sushi Mix", time: "Ordina Online 🛵", drink: "Gin Tonic Intenso 🍸" },
+                { movie: "Il Padrino", food: "Pasta al Forno", time: "50 min", drink: "Vino Rosso Fermo 🍷" }
+            ]
+        };
+
+        function selectMood(mood, btn) {
+            currentMood = mood;
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('spin-btn').style.display = 'block';
+            document.getElementById('result-display').style.display = 'none';
+        }
+
+        function spinRoulette() {
+            const options = database[currentMood];
+            const choice = options[Math.floor(Math.random() * options.length)];
+            const spinBtn = document.getElementById('spin-btn');
+
+            spinBtn.innerText = "SHAKERANDO...";
+            spinBtn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('res-movie').innerText = choice.movie;
+                document.getElementById('res-food').innerText = choice.food;
+                document.getElementById('res-food-time').innerText = "⏱ Preparazione: " + choice.time;
+                document.getElementById('res-drink').innerText = choice.drink;
+
+                document.getElementById('result-display').style.display = 'block';
+                spinBtn.innerText = "GIRA ANCORA";
+                spinBtn.style.background = "#1f2937";
+                spinBtn.style.color = "#fff";
+                spinBtn.disabled = false;
+                
+                window.scrollTo({ top: document.getElementById('result-display').offsetTop, behavior: 'smooth' });
+            }, 800);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>CineGusto</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#070b14">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
+    <style>
+        /* Qui c'è il tuo CSS... */
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CineGusto | Svolta la tua Serata</title>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px;">
+    
+    <a href="cerca.html" style="flex: 1; text-align: center; color: #888; text-decoration: none; font-size: 0.75rem; border: 1px solid #333; padding: 12px; border-radius: 12px; background: #111827; transition: 0.3s;">
+        🔍 CERCA FILM
+    </a>
+
+    <a href="roulette.html" style="flex: 1; text-align: center; background: linear-gradient(45deg, #fbbf24, #f59e0b); color: #000; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2); transition: 0.3s;">
+        🎰 MOOD ROULETTE
+    </a>
+
+</div>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: #0a0a12; color: #fff; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        .container { text-align: center; width: 90%; max-width: 500px; padding: 20px; }
+
+        h1 { font-size: 2.5rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,159,67,0.5); }
+        .subtitle { font-size: 0.9rem; color: #888; margin-bottom: 30px; }
+
+        /* SELEZIONE GENERE */
+        .genre-selector {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 30px;
+        }
+        .genre-btn {
+            background: #1e1e2e; border: 2px solid #333; color: #ccc;
+            padding: 15px; border-radius: 15px; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .genre-btn:active { transform: scale(0.95); }
+        .genre-btn.active { background: #ff9f43; color: #000; border-color: #ff9f43; box-shadow: 0 0 15px rgba(255,159,67,0.4); }
+
+        /* RISULTATO */
+        #result-card {
+            background: #1e1e2e; border-radius: 20px; padding: 25px;
+            border: 1px solid #333; display: none; /* Nascosto all'inizio */
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .pairing-title { font-size: 0.8rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        
+        .food-item, .drink-item { margin-bottom: 20px; }
+        .item-label { font-size: 0.7rem; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .item-name { font-size: 1.4rem; font-weight: 700; color: #fff; }
+        
+        .vibe-note { font-size: 0.85rem; color: #aaa; font-style: italic; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>CineGusto</h1>
+        <p class="subtitle">Scegli il genere, svolta la serata.</p>
+        
+        <div class="genre-selector">
+            <button class="genre-btn" onclick="showPairing('action')">AZIONE 💥</button>
+            <button class="genre-btn" onclick="showPairing('comedy')">COMMEDIA 😂</button>
+            <button class="genre-btn" onclick="showPairing('horror')">HORROR 😱</button>
+            <button class="genre-btn" onclick="showPairing('sci-fi')">FANTASCIENZA 🚀</button>
+            <button class="genre-btn" onclick="showPairing('romance')">ROMANTICO ❤️</button>
+            <button class="genre-btn" onclick="showPairing('thriller')">THRILLER 🕵️‍♂️</button>
+        </div>
+
+        <div id="result-card">
+            <div class="pairing-title">Abbinamento Perfetto</div>
+            
+            <div class="food-item">
+                <div class="item-label">Cosa Mangiare</div>
+                <div id="food-name" class="item-name"></div>
+            </div>
+
+            <div class="drink-item">
+                <div class="item-label">Cosa Bere</div>
+                <div id="drink-name" class="item-name"></div>
+            </div>
+
+            <div id="vibe-note" class="vibe-note"></div>
+        </div>
+    </div>
+
+    <script>
+        // IL DATABASE DEGLI ABBINAMENTI
+        const pairings = {
+            'action': {
+                food: "Pizza Diavola o Burritos",
+                drink: "Birra Media o Coca Zero",
+                vibe: "Luci spente, volume a palla. Preparati all'adrenalina."
+            },
+            'comedy': {
+                food: "Popcorn Giganti o Nachos con Formaggio",
+                drink: "Chinotto o Spritz",
+                vibe: "Atmosfera rilassata. Condividi il cibo e ridi di gusto."
+            },
+            'horror': {
+                food: "Sushi o Tartare (qualcosa di 'crudo')",
+                drink: "Vino Rosso Corposo o Bloody Mary",
+                vibe: "Solo una candela accesa. Tieni i cuscini a portata di mano."
+            },
+            'sci-fi': {
+                food: "Cibo Molecolare o Pokè Colorato",
+                drink: "Cocktail Blu o Energy Drink",
+                vibe: "Luci LED blu se le hai. Immergiti nel futuro."
+            },
+            'romance': {
+                food: "Pasta al Pomodoro o Cioccolatini",
+                drink: "Prosecco o Vino Bianco Fermo",
+                vibe: "Luci soffuse. Atmosfera intima e accogliente."
+            },
+            'thriller': {
+                food: "Hamburger Gourmet o Ramen",
+                drink: "Whisky on the rocks o Caffè Nero",
+                vibe: "Tutto buio. Concentrazione massima sui dettagli."
+            }
+        };
+
+        const resultCard = document.getElementById('result-card');
+        const foodName = document.getElementById('food-name');
+        const drinkName = document.getElementById('drink-name');
+        const vibeNote = document.getElementById('vibe-note');
+        const buttons = document.querySelectorAll('.genre-btn');
+
+        function showPairing(genre) {
+            // Aggiorna i pulsanti
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Prende i dati corretti
+            const pair = pairings[genre];
+
+            // Riempie la scheda dei risultati
+            foodName.innerText = pair.food;
+            drinkName.innerText = pair.drink;
+            vibeNote.innerText = pair.vibe;
+
+            // Mostra la scheda
+            resultCard.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
