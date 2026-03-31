@@ -13,158 +13,247 @@
 
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163478.png">
-    <style>
-        /* Qui c'è il tuo CSS... */
-    </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CineGusto | Svolta la tua Serata</title>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px;">
-    
-    <a href="cerca.html" style="flex: 1; text-align: center; color: #888; text-decoration: none; font-size: 0.75rem; border: 1px solid #333; padding: 12px; border-radius: 12px; background: #111827; transition: 0.3s;">
-        🔍 CERCA FILM
-    </a>
 
-    <a href="roulette.html" style="flex: 1; text-align: center; background: linear-gradient(45deg, #fbbf24, #f59e0b); color: #000; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2); transition: 0.3s;">
-        🎰 MOOD ROULETTE
-    </a>
-
-</div>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background-color: #0a0a12; color: #fff; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; overflow-x: hidden;
+            display: flex; justify-content: center; align-items: flex-start; 
+            min-height: 100vh; overflow-x: hidden; padding-top: 20px;
         }
 
-        .container { text-align: center; width: 90%; max-width: 500px; padding: 20px; }
+        .container { text-align: center; width: 95%; max-width: 600px; padding: 10px; }
 
-        h1 { font-size: 2.5rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,159,67,0.5); }
-        .subtitle { font-size: 0.9rem; color: #888; margin-bottom: 30px; }
+        h1 { font-size: 2.2rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,159,67,0.5); }
+        .subtitle { font-size: 0.8rem; color: #888; margin-bottom: 20px; }
 
-        /* SELEZIONE GENERE */
+        /* BARRA SUPERIORE CERCA */
+        .top-bar { margin-bottom: 20px; }
+        .search-btn {
+            display: block; width: 100%; text-align: center; color: #888; text-decoration: none; 
+            font-size: 0.75rem; border: 1px solid #333; padding: 12px; border-radius: 12px; 
+            background: #111827; transition: 0.3s;
+        }
+
+        /* LAYOUT GENERI + ROULETTE */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Generi più larghi, Roulette a destra */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
         .genre-selector {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
+
         .genre-btn {
             background: #1e1e2e; border: 2px solid #333; color: #ccc;
-            padding: 15px; border-radius: 15px; font-weight: 600; cursor: pointer;
-            transition: 0.3s; font-size: 0.9rem;
+            padding: 15px 5px; border-radius: 15px; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 0.8rem;
         }
-        .genre-btn:active { transform: scale(0.95); }
         .genre-btn.active { background: #ff9f43; color: #000; border-color: #ff9f43; box-shadow: 0 0 15px rgba(255,159,67,0.4); }
 
-        /* RISULTATO */
-        #result-card {
-            background: #1e1e2e; border-radius: 20px; padding: 25px;
-            border: 1px solid #333; display: none; /* Nascosto all'inizio */
-            animation: slideIn 0.5s ease-out;
+        .roulette-link {
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000; text-decoration: none; border-radius: 15px;
+            font-weight: 800; font-size: 0.75rem; text-align: center;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2); padding: 10px;
         }
 
+        /* SUGGERITORE FILM */
+        .random-box {
+            background: #1e1e2e; border-radius: 20px; padding: 20px;
+            margin: 20px 0; border: 1px solid #333;
+        }
+        .random-btn {
+            width: 100%; padding: 12px; font-size: 0.9rem; font-weight: 800;
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+            color: white; border: none; border-radius: 12px; cursor: pointer;
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+        #filmRisultato { font-size: 1.1rem; font-weight: 700; color: #ff9f43; min-height: 24px; }
+
+        /* RISULTATO ABBINAMENTO */
+        #result-card {
+            background: #1e1e2e; border-radius: 20px; padding: 25px;
+            border: 1px solid #333; display: none;
+            animation: slideIn 0.5s ease-out; margin-top: 20px;
+        }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .pairing-title { font-size: 0.8rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
-        
-        .food-item, .drink-item { margin-bottom: 20px; }
-        .item-label { font-size: 0.7rem; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .item-name { font-size: 1.4rem; font-weight: 700; color: #fff; }
-        
-        .vibe-note { font-size: 0.85rem; color: #aaa; font-style: italic; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
-
+        .pairing-title { font-size: 0.7rem; color: #ff9f43; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .item-name { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 15px; }
+        .vibe-note { font-size: 0.8rem; color: #aaa; font-style: italic; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <div class="top-bar">
+            <a href="cerca.html" class="search-btn">🔍 CERCA FILM</a>
+        </div>
+
         <h1>CineGusto</h1>
         <p class="subtitle">Scegli il genere, svolta la serata.</p>
         
-        <div class="genre-selector">
-            <button class="genre-btn" onclick="showPairing('action')">AZIONE 💥</button>
-            <button class="genre-btn" onclick="showPairing('comedy')">COMMEDIA 😂</button>
-            <button class="genre-btn" onclick="showPairing('horror')">HORROR 😱</button>
-            <button class="genre-btn" onclick="showPairing('sci-fi')">FANTASCIENZA 🚀</button>
-            <button class="genre-btn" onclick="showPairing('romance')">ROMANTICO ❤️</button>
-            <button class="genre-btn" onclick="showPairing('thriller')">THRILLER 🕵️‍♂️</button>
+        <div class="main-grid" style="grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px; display: grid;">
+            <div class="genre-selector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <button class="genre-btn" onclick="showPairing('action')">AZIONE 💥</button>
+                <button class="genre-btn" onclick="showPairing('comedy')">COMMEDIA 😂</button>
+                <button class="genre-btn" onclick="showPairing('horror')">HORROR 😱</button>
+                <button class="genre-btn" onclick="showPairing('sci-fi')">SCI-FI 🚀</button>
+                <button class="genre-btn" onclick="showPairing('animation')">CARTOON 🦊</button>
+                <button class="genre-btn" onclick="showPairing('thriller')">THRILLER 🕵️</button>
+                <button class="genre-btn" onclick="showPairing('fantasy')">FANTASY 🧙‍♂️</button>
+                <button class="genre-btn" onclick="showPairing('docu')">DOCU 🌍</button>
+            </div>
+            
+            <a href="roulette.html" class="roulette-link" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; text-decoration: none; border-radius: 15px; font-weight: 800; font-size: 0.75rem; text-align: center; padding: 10px;">
+                🎰<br>MOOD<br>ROULETTE
+            </a>
+        </div>
+
+        <div class="random-box">
+            <button class="random-btn" onclick="scegliFilm()">🎲 Suggeriscimi un Film!</button>
+            <p id="filmRisultato">Stasera cosa guardiamo?</p>
         </div>
 
         <div id="result-card">
             <div class="pairing-title">Abbinamento Perfetto</div>
-            
-            <div class="food-item">
-                <div class="item-label">Cosa Mangiare</div>
-                <div id="food-name" class="item-name"></div>
-            </div>
-
-            <div class="drink-item">
-                <div class="item-label">Cosa Bere</div>
-                <div id="drink-name" class="item-name"></div>
-            </div>
-
+            <div id="food-name" class="item-name"></div>
+            <div id="drink-name" class="item-name" style="color: #ff9f43;"></div>
             <div id="vibe-note" class="vibe-note"></div>
         </div>
     </div>
 
     <script>
-        // IL DATABASE DEGLI ABBINAMENTI
         const pairings = {
-            'action': {
-                food: "Pizza Diavola o Burritos",
-                drink: "Birra Media o Coca Zero",
-                vibe: "Luci spente, volume a palla. Preparati all'adrenalina."
-            },
-            'comedy': {
-                food: "Popcorn Giganti o Nachos con Formaggio",
-                drink: "Chinotto o Spritz",
-                vibe: "Atmosfera rilassata. Condividi il cibo e ridi di gusto."
-            },
-            'horror': {
-                food: "Sushi o Tartare (qualcosa di 'crudo')",
-                drink: "Vino Rosso Corposo o Bloody Mary",
-                vibe: "Solo una candela accesa. Tieni i cuscini a portata di mano."
-            },
-            'sci-fi': {
-                food: "Cibo Molecolare o Pokè Colorato",
-                drink: "Cocktail Blu o Energy Drink",
-                vibe: "Luci LED blu se le hai. Immergiti nel futuro."
-            },
-            'romance': {
-                food: "Pasta al Pomodoro o Cioccolatini",
-                drink: "Prosecco o Vino Bianco Fermo",
-                vibe: "Luci soffuse. Atmosfera intima e accogliente."
-            },
-            'thriller': {
-                food: "Hamburger Gourmet o Ramen",
-                drink: "Whisky on the rocks o Caffè Nero",
-                vibe: "Tutto buio. Concentrazione massima sui dettagli."
-            }
-        };
-
-        const resultCard = document.getElementById('result-card');
-        const foodName = document.getElementById('food-name');
-        const drinkName = document.getElementById('drink-name');
-        const vibeNote = document.getElementById('vibe-note');
-        const buttons = document.querySelectorAll('.genre-btn');
+    'action': { 
+        food: "Pizza Diavola, Burritos o Hot Dog 🌭", 
+        drink: "Birra Media, Coca Zero o Red Bull ⚡", 
+        vibe: "Luci spente, volume a palla. Preparati all'adrenalina." 
+    },
+    'comedy': { 
+        food: "Popcorn Giganti, Nachos o Chips 🍟", 
+        drink: "Chinotto, Spritz o Cedrata 🍹", 
+        vibe: "Atmosfera rilassata. Condividi il cibo e ridi di gusto." 
+    },
+    'horror': { 
+        food: "Sushi, Tartare (Crudo) o Ali di Pollo Piccanti 🔥", 
+        drink: "Vino Rosso, Bloody Mary o Succo di Melograno 🍷", 
+        vibe: "Solo una candela accesa. Tieni i cuscini a portata di mano." 
+    },
+    'sci-fi': { 
+        food: "Pokè Colorato, Noodles o Ramen 🍜", 
+        drink: "Energy Drink, Cocktail Blu o Acqua Tonica 🥤", 
+        vibe: "Luci LED se le hai. Immergiti nel futuro." 
+    },
+    'animation': { 
+        food: "Cereal Bowl, Pancake o Zucchero Filato 🥞", 
+        drink: "Succo di Frutta, Frappè o Cioccolata Calda 🥛", 
+        vibe: "Torna bambino e goditi l'esplosione di colori!" 
+    },
+    'thriller': { 
+        food: "Hamburger Gourmet, Tartine al Salmone o Formaggi Stagionati 🧀", 
+        drink: "Caffè Nero, Whisky o Gin Tonic 🍸", 
+        vibe: "Tutto buio. Concentrazione massima su ogni dettaglio." 
+    },
+    'fantasy': { 
+        food: "Coscia di Pollo, Pane e Formaggio o Stufato 🍖", 
+        drink: "Sidro, Tè ai Frutti di Bosco o Birra Artigianale 🍺", 
+        vibe: "Prepara la spada (o il telecomando), si parte per l'avventura." 
+    },
+    'docu': { 
+        food: "Insalata Greca, Frutta Secca o Hummus 🥗", 
+        drink: "Tè Verde, Acqua e Limone o Kombucha 🍵", 
+        vibe: "Mente aperta. Impara qualcosa di incredibile sul mondo." 
+    }
+};
 
         function showPairing(genre) {
-            // Aggiorna i pulsanti
+            const buttons = document.querySelectorAll('.genre-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
 
-            // Prende i dati corretti
             const pair = pairings[genre];
-
-            // Riempie la scheda dei risultati
-            foodName.innerText = pair.food;
-            drinkName.innerText = pair.drink;
-            vibeNote.innerText = pair.vibe;
-
-            // Mostra la scheda
-            resultCard.style.display = 'block';
+            document.getElementById('food-name').innerText = "🍴 " + pair.food;
+            document.getElementById('drink-name').innerText = "🥤 " + pair.drink;
+            document.getElementById('vibe-note').innerText = pair.vibe;
+            document.getElementById('result-card').style.display = 'block';
         }
+
+        function scegliFilm() {
+    const film = [
+        "Inception 🌀", "Interstellar 🚀", "The Dark Knight 🦇", "Pulp Fiction 🍔", "Matrix 🕶️", 
+        "Spider-Man: Across the Spider-Verse 🕷️", "Fight Club 👊", "Forrest Gump 🏃", "Il Gladiatore ⚔️",
+        "The Wolf of Wall Street 📈", "Il Signore degli Anelli 💍", "Star Wars: L'Impero Colpisce Ancora 🌌",
+        "Ritorno al Futuro 🏎️", "Jurassic Park 🦖", "Seven 📦", "Shutter Island 🏝️", "Il Silenzio degli Innocenti 🦋",
+        "Parasite 🏠", "Joker 🤡", "La La Land 💃", "Whiplash 🥁", "Blade Runner 2049 🤖", "Mad Max: Fury Road 🌵",
+        "Django Unchained ⛓️", "The Hateful Eight ❄️", "C'era una volta a Hollywood 🎥", "Inglourious Basterds 🗼",
+        "Arrival 👽", "Dune 🏜️", "Tenet ⏳", "Memento 📸", "The Prestige 🪄", "Gone Girl 📝", "Zodiac ✍️",
+        "The Social Network 💻", "Bohemian Rhapsody 🎤", "Rocketman 🎹", "The Truman Show 📺", "Eternal Sunshine 🧠",
+        "Grand Budapest Hotel 🏨", "Moonrise Kingdom ⛺", "Birdman 🦅", "The Revenant 🐻", "Bird Box 🙈",
+        "A Quiet Place 🤫", "Hereditary 🕯️", "Midsommar 🌻", "The Witch 🐐", "Get Out 👁️", "Noi - Us ✂️",
+        "The Lighthouse ⚓", "Uncut Gems 💎", "Everything Everywhere All At Once 👁️‍🗨️", "The Whale 🐳",
+        "Top Gun: Maverick ✈️", "John Wick 🐶", "The Batman 🦇", "Black Panther 🐾", "Avengers: Endgame 🧤",
+        "Guardiani della Galassia 🦝", "Deadpool ⚔️", "Logan 🐺", "The Boys (Serie, ma vale!) 🦸",
+        "La città incantata 🐉", "Il mio vicino Totoro ☂️", "Princess Mononoke 🐺", "Your Name ☄️",
+        "Akira 🏍️", "Ghost in the Shell 🧠", "Perfect Blue 🎤", "Paprika 🏮", "Spirited Away 🛁",
+        "Spider-Man: No Way Home 🕷️", "Iron Man 🦾", "Thor: Ragnarok ⚡", "Doctor Strange 👁️",
+        "Heat - La Sfida 🔫", "Scarface 🏔️", "Il Padrino 🌹", "Goodfellas 🇮🇹", "Casino 🎰",
+        "The Irishman 🍀", "Snatch 💎", "Lock & Stock 🔫", "The Gentlemen 🚬", "Kingsman 🌂",
+        "Sherlock Holmes 🕵️", "Knives Out 🔪", "Glass Onion 🧅", "The Nice Guys 🕶️", "Baby Driver 🎧",
+        "Scott Pilgrim vs the World 🎸", "Superbad 🍺", "Una notte da leoni 🥂", "Hot Fuzz 👮",
+        "Shaun of the Dead 🧟", "Zombieland 🎡", "Train to Busan 🚆", "28 giorni dopo ☣️",
+        "Alien 👾", "Prometheus 🏺", "The Thing ❄️", "Predator 🌲", "RoboCop 👮", "Terminator 🤖",
+        "Total Recall 🔴", "Starship Troopers 🐜", "The Martian 🥔", "Gravity 👨‍🚀", "Apollo 13 🚀",
+        "The Abyss 🌊", "Avatar 🔵", "Titanic 🚢", "The Shape of Water 🐟", "Pan's Labyrinth 🧚",
+        "Hellboy 👹", "Pacific Rim 🤖", "Godzilla vs Kong 🦍", "Shin Godzilla 🇯🇵", "Oldboy 🔨",
+        "The Handmaiden 📜", "I Saw the Devil 🔪", "Memories of Murder 🔍", "The Host 🧪",
+        "Drive 🧤", "Nightcrawler 🎥", "Prisoners ⛓️", "Sicario 🌵", "Hell or High Water 🤠",
+        "No Country for Old Men 🪙", "Fargo ❄️", "The Big Lebowski 🎳", "O Brother Where Art Thou? 🎻",
+        "Inside Llewyn Davis 🎸", "A Serious Man 🕍", "Burn After Reading 💾", "True Grit 🤠",
+        "The Banshees of Inisherin 🫏", "The Green Knight 🌳", "The Northman 🪓", "Valhalla Rising 🩸",
+        "Drive My Car 🚗", "Shoplifters 🍜", "The Worst Person in the World 🌍", "Another Round 🍻",
+        "Titane 🏎️", "Raw 🥩", "Climax 💃", "Enter the Void 🌌", "Neon Demon 💄", "Suspiria 💃",
+        "Pearl 🪓", "X 🎥", "Barbarian 🚪", "Smile 😬", "Talk to Me 🖐️", "The Menu 🍽️",
+        "Fresh 🥩", "Ready or Not 🏹", "Don't Breathe 🏠", "Evil Dead Rise 🪵", "The Conjuring 👻",
+        "Insidious 🕯️", "Sinister 📽️", "It 🎈", "Doctor Sleep 🧢", "Misery 🔨", "The Shining 🪓",
+        "Full Metal Jacket 🪖", "Paths of Glory 🎖️", "Dr. Strangelove 💣", "A Clockwork Orange 🥛",
+        "Barry Lyndon 🕯️", "Eyes Wide Shut 🎭", "Taxi Driver 🚕", "Raging Bull 🥊", "Cape Fear ⛵",
+        "The Departed ☘️", "Hugo ⚙️", "The Fabelmans 🎞️", "West Side Story 💃", "E.T. 👽",
+        "Schindler's List 🕯️", "Saving Private Ryan 🪖", "Lincoln 🎩", "Minority Report 👁️",
+        "Catch Me If You Can ✈️", "Bridge of Spies 🌉", "Munich 🕊️", "Duel 🚛", "Jaws 🦈",
+        "Arancia Meccanica 🥛", "Il Padrino - Parte II 🌹", "Quei Bravi Ragazzi 🔫", "C'era una volta in America 🎷", 
+        "Apocalypse Now 🚁", "Taxi Driver 🚕", "Toro Scatenato 🥊", "The Blues Brothers 🕶️", "I Soliti Sospetti 🎭", 
+        "Seven 📦", "L'Esorcista ✝️", "Lo Squalo 🦈", "Alien 👽", "Blade Runner 🤖", "2001: Odissea nello Spazio 👨‍🚀",
+        "Deadpool & Wolverine 💛", "The Batman 🦇", "Guardiani della Galassia Vol. 3 🦝", "Spider-Man: No Way Home 🕷️", 
+        "Avengers: Infinity War 🧤", "Zack Snyder's Justice League ⚡", "Wonder Woman 🛡️", "Man of Steel 🦸‍♂️", 
+        "Suicide Squad 🃏", "Logan 🐺", "The Flash ⚡", "Aquaman 🔱", 
+        "Cattivissimo Me 🍌", "Kung Fu Panda 4 🐼", "Spider-Verse 🕷️", "Super Mario Bros. 🍄", "Toy Story 🤠", 
+        "Shrek 🧅", "I Simpson - Il Film 🍩", "Ted 🧸", "Una Notte da Leoni 🥂", "Project X 🎉", "American Pie 🥧", 
+        "Borat 🇰🇿", "Zoolander 🤳"
+    ];
+
+    const indice = Math.floor(Math.random() * film.length);
+    const scelta = film[indice];
+
+    // Animazione testo: cambia il testo mentre "gira"
+    let count = 0;
+    const interval = setInterval(() => {
+        document.getElementById("filmRisultato").innerText = "Scegliendo... 🎲";
+        count++;
+        if (count > 5) {
+            clearInterval(interval);
+            document.getElementById("filmRisultato").innerText = "Guarda: " + scelta;
+        }
+    }, 100);
+}
     </script>
 </body>
 </html>
