@@ -107,29 +107,46 @@
             </div>
         </div>
 
-        <a href="index.html" class="back-link">← TORNA ALLA HOME</a>
+        <a href="T1.5.html" class="back-link">← TORNA ALLA HOME</a>
     </div>
-
-    <script>
+<script>
         let currentMood = "";
         
-        const database = {
-            'tired': [
-                { movie: "Shrek", food: "Nuggets & Waffles", time: "20 min", drink: "Succo d'Arancia 🥤" },
-                { movie: "Mamma ho perso l'aereo", food: "Pizza Formaggio Kevin", time: "12 min", drink: "Cioccolata Calda ☕" }
-            ],
-            'sad': [
-                { movie: "Titanic", food: "Gelato & Fragole", time: "5 min", drink: "Vino Rosé 🍷" },
-                { movie: "Up", food: "Pasta al Burro e Salvia", time: "10 min", drink: "Tè Caldo al Limone 🍵" }
-            ],
-            'wild': [
-                { movie: "Mad Max: Fury Road", food: "Alette di Pollo fritte", time: "25 min", drink: "Birra Media Gelata 🍺" },
-                { movie: "Fast & Furious", food: "Hot Dog Extreme", time: "10 min", drink: "Coca & Jack 🥃" }
-            ],
-            'bored': [
-                { movie: "Inception", food: "Sushi Mix", time: "Ordina Online 🛵", drink: "Gin Tonic Intenso 🍸" },
-                { movie: "Il Padrino", food: "Pasta al Forno", time: "50 min", drink: "Vino Rosso Fermo 🍷" }
-            ]
+        // DATABASE DIVISO PER GENERI CON CIBI COERENTI
+        const cineDatabase = {
+            'action': {
+                films: ["John Wick 🐶", "Mad Max 🌵", "Top Gun ✈️", "Fast & Furious 🏎️", "Gladiatore ⚔️", "Die Hard 🏢"],
+                food: "Hot Dog Extreme o Burritos 🌯",
+                drink: "Birra Media o Coca Zero 🥤"
+            },
+            'horror': {
+                films: ["L'Esorcista ✝️", "Scream 🔪", "The Conjuring 👻", "It 🎈", "Smile 😬", "Talk to Me 🖐️"],
+                food: "Ali di Pollo Piccanti o Sushi (Crudo) 🍣",
+                drink: "Vino Rosso o Bloody Mary 🍷"
+            },
+            'sci-fi': {
+                films: ["Inception 🌀", "Interstellar 🚀", "Matrix 🕶️", "Dune 🏜️", "Blade Runner 🤖", "Arrival 👽"],
+                food: "Noodles, Ramen o Pokè 🍜",
+                drink: "Energy Drink o Blue Cocktail 🍹"
+            },
+            'animation': {
+                films: ["Shrek 🧅", "Spiderman: Spider-Verse 🕷️", "La città incantata 🐉", "Toy Story 🤠", "Inside Out 🧠"],
+                food: "Pancake, Nuggets o Zucchero Filato 🥞",
+                drink: "Frappè o Succo di Frutta 🥛"
+            },
+            'comedy': {
+                films: ["Una notte da leoni 🥂", "Superbad 🍺", "Ted 🧸", "Mamma ho perso l'aereo 🏠", "Zoolander 🤳"],
+                food: "Popcorn Giganti o Nachos con Formaggio 🧀",
+                drink: "Spritz o Chinotto 🍹"
+            }
+        };
+
+        // MAPPA MOOD -> GENERI (Decide cosa pescare in base a come ti senti)
+        const moodMap = {
+            'tired': ['animation', 'comedy'], // Se sei stanco: roba leggera
+            'sad': ['animation', 'sci-fi'],   // Se sei triste: sogni o mondi lontani
+            'wild': ['action', 'horror'],     // Se sei carico: adrenalina o paura
+            'bored': ['sci-fi', 'action']     // Se sei annoiato: azione pura o trip mentali
         };
 
         function selectMood(mood, btn) {
@@ -141,28 +158,37 @@
         }
 
         function spinRoulette() {
-            const options = database[currentMood];
-            const choice = options[Math.floor(Math.random() * options.length)];
-            const spinBtn = document.getElementById('spin-btn');
+            // 1. Sceglie un genere a caso tra quelli adatti al mood
+            const possibleGenres = moodMap[currentMood];
+            const chosenGenre = possibleGenres[Math.floor(Math.random() * possibleGenres.length)];
+            
+            // 2. Prende i dati di quel genere specifico
+            const data = cineDatabase[chosenGenre];
+            
+            // 3. Pesca un film a caso da quel genere
+            const randomMovie = data.films[Math.floor(Math.random() * data.films.length)];
 
-            spinBtn.innerText = "SHAKERANDO...";
+            const spinBtn = document.getElementById('spin-btn');
+            spinBtn.innerText = "ABBINAMENTO IN CORSO...";
             spinBtn.disabled = true;
 
             setTimeout(() => {
-                document.getElementById('res-movie').innerText = choice.movie;
-                document.getElementById('res-food').innerText = choice.food;
-                document.getElementById('res-food-time').innerText = "⏱ Preparazione: " + choice.time;
-                document.getElementById('res-drink').innerText = choice.drink;
+                // Mostra i risultati COERENTI
+                document.getElementById('res-movie').innerText = randomMovie;
+                document.getElementById('res-food').innerText = data.food;
+                document.getElementById('res-drink').innerText = data.drink;
+                document.getElementById('res-food-time').innerText = "⏱ Match perfetto per il genere " + chosenGenre.toUpperCase();
 
                 document.getElementById('result-display').style.display = 'block';
                 spinBtn.innerText = "GIRA ANCORA";
-                spinBtn.style.background = "#1f2937";
-                spinBtn.style.color = "#fff";
+                spinBtn.style.background = "#fbbf24";
+                spinBtn.style.color = "#000";
                 spinBtn.disabled = false;
                 
                 window.scrollTo({ top: document.getElementById('result-display').offsetTop, behavior: 'smooth' });
             }, 800);
         }
     </script>
+    
 </body>
 </html>
